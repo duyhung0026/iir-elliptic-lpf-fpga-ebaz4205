@@ -18,7 +18,7 @@ The project includes:
 ## System Architecture
 
 ```text
-ESP32
+ESP32 (Functional Signal)
   |
   v
 MCP4921 DAC (12-bit)
