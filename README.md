@@ -1,9 +1,5 @@
 # FPGA Implementation of Elliptic IIR Low-Pass Filter Architectures on EBAZ4205
 
-I've been working on personal projects to develop my skills and build my engineering portfolio.
-My projects may contain a few bugs that I haven't discovered yet, so I hope you can understand and bear with me.
-I'd really appreciate a ⭐ on GitHub!
-
 ## Project Overview
 
 A fixed-point DSP project that designs, implements, simulates, and evaluates elliptic IIR low-pass filters on the **EBAZ4205 board with the Xilinx Zynq XC7Z010 FPGA**. The project compares three RTL architectures and validates the filtering system using a real analog signal path.
