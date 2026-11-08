@@ -1,8 +1,3 @@
-%% ==== Ve lai HW Waveform tu file .txt da doc san (khong can UART) ====
-% Doc file ADC code (moi dong 1 gia tri, 0..4095) va xuat PDF/PNG.
-% PDF duoc dat dung kich thuoc cua file FFT tham chieu:
-% 335 x 226 point = 4.65278 x 3.13889 inch.
-
 clc;
 clear;
 close all;
