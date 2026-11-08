@@ -5,25 +5,23 @@
 
 SPIClass spi(VSPI);
 // TEST_MODE = 1: Multi-tone 50 + 2000 + 3000 Hz
-// TEST_MODE = 2: Single-tone gần cutoff, chọn SINGLE_FREQ = 150 hoặc 250
+// TEST_MODE = 2: Single-tone near cutoff, choose SINGLE_FREQ = 150 or 250
 // TEST_MODE = 3: DC
 #define TEST_MODE 3
 
-// Chỉ dùng khi TEST_MODE = 2
+// only use when TEST_MODE = 2
 #define SINGLE_FREQ 250.0f
 // #define SINGLE_FREQ 250.0f
 
-// THÔNG SỐ LẤY MẪU
+// Get sample cofficients
 const double FS_TARGET = 35511.0;
 const double TS_US = 1000000.0 / FS_TARGET;
 
-// THÔNG SỐ DAC
+// DAC
 const float MID = 2048.0f;
 const float TWO_PI_F = 6.28318530718f;
 
 // TEST 1: MULTI-TONE
-// 50 Hz nằm trong dải thông
-// 2000 Hz và 3000 Hz nằm vùng suy hao
 const float FREQ1 = 50.0f;
 const float FREQ2 = 2000.0f;
 const float FREQ3 = 3000.0f;
@@ -33,12 +31,9 @@ const float AMP2 = 443.0f;
 const float AMP3 = 266.0f;
 
 // TEST 2: SINGLE-TONE
-// Dùng để kiểm tra vùng gần cutoff
 const float SINGLE_AMP = 1241.0f;
 
 // TEST 3: DC
-// DC_CODE = 2048: mức giữa, tương đương AC = 0
-// DC_CODE = 2600: mức DC dương để xem bộ lọc có giữ DC không
 const int DC_CODE = 2048;
 
 // BIẾN PHA
@@ -55,7 +50,7 @@ const float DPH_SINGLE = TWO_PI_F * SINGLE_FREQ / (float)FS_TARGET;
 double nextSampleUs = 0.0;
 
 
-// GỬI 1 MẪU RA MCP4921
+// Send 1 sample to MCP4921
 void writeDAC(uint16_t dac_code) {
   dac_code = constrain(dac_code, 0, 4095);
 
@@ -67,7 +62,7 @@ void writeDAC(uint16_t dac_code) {
 }
 
 
-// TẠO MẪU THEO TEST_MODE
+// create samples TEST_MODE
 uint16_t generateSample() {
   float sig = MID;
 
@@ -89,7 +84,7 @@ uint16_t generateSample() {
 
 #elif TEST_MODE == 2
 
-  // Single-tone: 150 Hz hoặc 250 Hz
+  // Single-tone: 150 Hz or 250 Hz
   sig = MID + SINGLE_AMP * sinf(ph_single);
 
   ph_single += DPH_SINGLE;
@@ -136,7 +131,7 @@ void loop() {
 
     nextSampleUs += TS_US;
 
-    // Nếu ESP32 bị trễ quá lâu thì kéo lại thời gian
+    // If ESP32 delays to long
     if (nowUs - nextSampleUs > 1000.0) {
       nextSampleUs = nowUs + TS_US;
     }
