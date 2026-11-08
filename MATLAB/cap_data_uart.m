@@ -13,7 +13,6 @@ VREF       = 3.3;
 ADC_LEVELS = 4096;
 PLOT_N     = 400;
 
-% Kich thuoc chinh xac cua PDF FFT tham chieu
 PDF_WIDTH_PT  = 335;
 PDF_HEIGHT_PT = 226;
 
@@ -27,7 +26,7 @@ end
 adc_code = readmatrix(input_file);
 adc_code = adc_code(:);
 
-fprintf('Da doc %d mau tu:\n%s\n', numel(adc_code), input_file);
+fprintf('Read %d Samples from:\n%s\n', numel(adc_code), input_file);
 fprintf('Min = %d, Max = %d, Mean = %.2f\n', min(adc_code), max(adc_code), mean(adc_code));
 
 if numel(adc_code) < PLOT_N
@@ -77,9 +76,6 @@ switch ARCH_NAME
     otherwise
         arch_file = ARCH_NAME;
 end
-
-% Lay tan so nam trong dau ngoac.
-% Vi du: th2(150) -> 150, khong bi lay nham so 2 trong "th2".
 freq_token = regexp(TEST_CASE, '\((\d+)\)', 'tokens', 'once');
 
 if ~isempty(freq_token)
@@ -89,7 +85,6 @@ elseif strcmpi(TEST_CASE, 'th1')
 elseif strcmpi(TEST_CASE, 'th3')
     test_label = 'dc';
 else
-    % Du phong: lay nhom chu so cuoi cung neu testcase co dinh dang khac
     all_numbers = regexp(TEST_CASE, '\d+', 'match');
 
     if ~isempty(all_numbers)
@@ -119,6 +114,6 @@ print(fig_hw, png_file, '-dpng', '-r600');
 fprintf('\nDa xuat:\n');
 fprintf('PDF: %s\n', pdf_file);
 fprintf('PNG: %s\n', png_file);
-fprintf('Kich thuoc PDF: %d x %d point (%.5f x %.5f inch)\n', ...
+fprintf('Size of PDF: %d x %d point (%.5f x %.5f inch)\n', ...
     PDF_WIDTH_PT, PDF_HEIGHT_PT, ...
     PDF_WIDTH_PT/72, PDF_HEIGHT_PT/72);
