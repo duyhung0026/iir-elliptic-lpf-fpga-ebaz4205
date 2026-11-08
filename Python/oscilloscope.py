@@ -35,13 +35,8 @@ def parse_frames():
     MAX_SAMPLES = 1000
 
     while len(results) < MAX_SAMPLES:
-
-        # chờ đủ 2 byte (12-bit data)
         if ser.in_waiting < 2:
             break
-
-
-        # đọc 2 byte dữ liệu
         high = ser.read(1)
         low  = ser.read(1)
 
@@ -50,57 +45,26 @@ def parse_frames():
 
         high = high[0]
         low  = low[0]
-
-
-        # ghép 12 bit
         adc_val = ((high & 0x0F) << 8) | low
-
-
-        # giới hạn 12-bit
         adc_val = max(0, min(adc_val, 4095))
-
-
-        # đổi sang điện áp
         voltage = adc_val * VREF / 4095.0
-
         results.append(voltage)
-
-
     return results
-
-
-
 def update(frame):
 
     # tránh buffer UART tràn
     if ser.in_waiting > 12000:
         ser.reset_input_buffer()
-
-
     values = parse_frames()
-
-
     if values:
-
         buf.extend(values)
-
         line.set_ydata(list(buf))
-
-
         latest = values[-1]
-
         adc_raw = int(latest * 4095 / VREF)
-
-
         val_text.set_text(
             f'Latest: {latest:.3f} V  (ADC={adc_raw})'
         )
-
-
     return line, val_text
-
-
-
 ani = animation.FuncAnimation(
     fig,
     update,
@@ -108,10 +72,6 @@ ani = animation.FuncAnimation(
     blit=True,
     cache_frame_data=False
 )
-
-
 plt.tight_layout()
 plt.show()
-
-
 ser.close()
