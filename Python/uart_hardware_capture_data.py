@@ -7,8 +7,8 @@ VREF      = 3.3
 N_SAMPLES = 3000
 SAVE_DIR  = r'D:\kltn\compare rtl vs matlab\dump_data'
 
-TEST_CASE = 'th2(350)'         # <-- đổi 'th1' / 'th2' / 'th3'
-ARCH_NAME = 'df1'         # <-- đổi 'df1' / 'df1_cascade' / 'tdf2_cascade'
+TEST_CASE = 'th2(350)'         # <-- switch 'th1' / 'th2' / 'th3'
+ARCH_NAME = 'df1'         # <-- switch 'df1' / 'df1_cascade' / 'tdf2_cascade'
 
 save_path = os.path.join(SAVE_DIR, f'hardware_{ARCH_NAME}({TEST_CASE}).txt')
 os.makedirs(SAVE_DIR, exist_ok=True)
