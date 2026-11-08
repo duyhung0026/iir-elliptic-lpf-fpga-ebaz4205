@@ -2,7 +2,6 @@ clc;
 clear;
 close all;
 
-%% CONFIG
 TEST_CASE = 'th2(250)';                 % th1 / th2(150) / th2(250) / th2(350) / th3
 ARCH_NAME = 'df1_cascade';        % df1 / df1_cascade / tdf2_cascade
 TEST_MODE = 'near';                  % multi / near / dc
@@ -18,12 +17,11 @@ SKIP_TIME = 0.05;
 AUTO_ESTIMATE_FS_HW = true;
 FS_HW_MANUAL = fs_mat / 4;
 
-SAVE_DIR = 'D:\kltn\compare rtl vs matlab\dump_data';
+SAVE_DIR = '...\...\...\...\dump_data';
 output_file = fullfile(SAVE_DIR, sprintf('hardware_%s(%s).txt', ARCH_NAME, TEST_CASE));
 
 fprintf('\nReading file:\n%s\n', output_file);
 
-%% ARCHITECTURE DISPLAY NAME
 switch ARCH_NAME
     case 'df1'
         arch_label = 'DF1 single biquad';
@@ -35,7 +33,6 @@ switch ARCH_NAME
         error('Invalid ARCH_NAME');
 end
 
-%% SELECT TEST
 switch TEST_MODE
     case 'multi'
         tone_freq = [50 2000 3000];
@@ -60,12 +57,9 @@ switch TEST_MODE
         error('Invalid TEST_MODE');
 end
 
-%% LOAD COEFFICIENT
 fs = fs_mat;
 run('gen_coeff.m');
 fs_mat = fs;
-
-%% EXPORT FULL POLE-ZERO PLOT FOR 4TH-ORDER ELLIPTIC FILTER
 
 % Convert SOS cascade to transfer function
 [b4, a4] = sos2tf(sos);
@@ -87,9 +81,6 @@ title('Pole-Zero Plot of the Fourth-Order Elliptic Lowpass Filter', ...
 xlabel('Real Part', 'FontSize', 11);
 ylabel('Imaginary Part', 'FontSize', 11);
 
-% =========================
-% SHOW FULL UNIT CIRCLE
-% =========================
 axis equal;
 xlim([-1.10 1.10]);
 ylim([-1.10 1.10]);
@@ -99,7 +90,6 @@ yticks(-1:0.5:1);
 
 pbaspect([1 1 1]);
 
-% Format for LaTeX export
 set(gcf, 'Units', 'inches', 'Position', [1 1 4.8 4.8]);
 set(gca, 'FontSize', 11, 'LineWidth', 0.8);
 
@@ -118,7 +108,6 @@ fprintf('\nExported full pole-zero figure:\n');
 fprintf('pole_zero_4th_order_full.pdf\n');
 fprintf('pole_zero_4th_order_full.png\n');
 
-%% LOAD HARDWARE OUTPUT
 hw_out_raw = read_adc_file(output_file);
 
 % Residual voltage relative to ideal 1.65 V / ADC mid-scale
@@ -137,12 +126,10 @@ fprintf('\nDEBUG VOLTAGE\n');
 fprintf('Output mean deviation from %.2f V = %.6f V\n', DC_REF, mean(hw_out));
 fprintf('Output std deviation             = %.6f V\n', std(hw_out));
 
-%% REMOVE DC FOR FFT TEST
 if do_fft_test
     hw_out = hw_out - mean(hw_out);
 end
 
-%% ESTIMATE HARDWARE FS
 if do_fft_test && AUTO_ESTIMATE_FS_HW
     fs_hw = estimate_fs_from_tone(hw_out, tone_freq(1));
 else
@@ -152,7 +139,6 @@ end
 fprintf('\nfs MATLAB       = %.3f Hz\n', fs_mat);
 fprintf('fs Hardware UART = %.3f Hz\n', fs_hw);
 
-%% CREATE MATLAB REFERENCE
 T_hw = length(hw_out) / fs_hw;
 N_mat = round(T_hw * fs_mat);
 t_mat = (0:N_mat-1)' / fs_mat;
@@ -167,7 +153,6 @@ else
     mat_in = zeros(N_mat, 1);
 end
 
-%% MATLAB FILTER
 switch ARCH_NAME
     case 'df1'
         mat_out = sosfilt(sos_df1, mat_in);
@@ -184,7 +169,6 @@ if do_fft_test
     mat_out = mat_out - mean(mat_out);
 end
 
-%% CUT TRANSIENT
 skip_hw = min(round(SKIP_TIME * fs_hw), length(hw_out) - 10);
 skip_mat = min(round(SKIP_TIME * fs_mat), length(mat_out) - 10);
 
@@ -196,7 +180,6 @@ mat_in_a = mat_in(skip_mat+1:end);
 mat_out_a = mat_out(skip_mat+1:end);
 hw_raw_a = hw_out_raw(skip_hw+1:end);
 
-%% FFT ANALYSIS
 if do_fft_test
     NFFT = 37682;
 
@@ -211,7 +194,6 @@ if do_fft_test
     HW_OUT_dB = 20*log10(HW_OUT_SPEC / REF_IN + eps);
 end
 
-%% PRINT RESULT
 fprintf('\nRESULTS\n');
 
 if do_fft_test
@@ -246,7 +228,6 @@ else
     fprintf('HW output std deviation                  = %.6f V\n', std(hw_out_a));
 end
 
-%% PLOT
 if do_fft_test
     fig_title = sprintf('FFT Input and Output - %s - %d Hz', arch_label, SINGLE_FREQ);
 else
@@ -321,7 +302,6 @@ else
     ylabel('Output voltage deviation from 1.65 V (V)', 'FontSize', 10);
 end
 
-%% EXPORT FIGURE FOR LATEX
 switch ARCH_NAME
     case 'df1'
         arch_file = 'df1';
@@ -351,7 +331,6 @@ fprintf('\nExported figure:\n');
 fprintf('%s.pdf\n', export_name);
 fprintf('%s.png\n', export_name);
 
-%% FUNCTIONS
 function x = read_adc_file(fname)
     if ~isfile(fname)
         error('File not found: %s', fname);
