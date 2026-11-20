@@ -47,10 +47,10 @@ integer fp_out;
 initial begin
     // Nap file hex (16-bit signed Q1.14 tu MATLAB)
     // Moi dong: 4 ky tu hex, vi du "1A2B"
-    $readmemh("D:\\kltn\\compare rtl vs matlab\\gen\\input_12bit(th3).txt", input_data);
+ $readmemh("...\\...\\compare rtl vs matlab\\gen\\input_12bit(th3).txt", input_data);
  
     // Mo file ghi output
-    fp_out = $fopen("D:\\kltn\\compare rtl vs matlab\\dump_data\\filter_block_output_df1_cascade(th3).txt", "w");
+ fp_out = $fopen("...\\...\\compare rtl vs matlab\\dump_data\\filter_block_output_df1_cascade(th3).txt", "w");
     if (fp_out == 0) begin
         $display("ERROR: Khong mo duoc file output!");
         $finish;
